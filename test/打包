@@ -1,1 +1,1 @@
-pyinstaller --onefile --windowed --icon=app_icon.ico --add-data "resource;resource" --add-data "database.py;." main.py
+pyinstaller --onefile --windowed --icon=app_icon.ico --add-data "resource;resource" --add-data "database.py;." --name supply_progress main.py

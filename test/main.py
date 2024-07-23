@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtGui import QPainter, QImage, QColor, QBrush, QDesktopServices
 from PyQt5.QtWidgets import QApplication, QFrame, QStackedWidget, QHBoxLayout, QLabel, QVBoxLayout, QTableWidget, \
-    QTableWidgetItem, QWidget, QSizePolicy, QDialog, QStyledItemDelegate, QDateEdit
+    QTableWidgetItem, QWidget, QSizePolicy, QDialog, QStyledItemDelegate, QDateEdit, QPushButton
 from PyQt5.QtWidgets import QGridLayout
 from matplotlib import rcParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -86,6 +86,7 @@ class AvatarWidget(NavigationWidget):
             font.setPixelSize(14)
             painter.setFont(font)
             painter.drawText(QRect(44, 0, 255, 36), Qt.AlignVCenter, 'a奥巴熊🐻')
+
 
 
 class CustomTitleBar(TitleBar):
@@ -659,6 +660,7 @@ class Window(FramelessWindow):
 
         self.navigationInterface.addSeparator()
 
+        self.addUpdateButton(FIF.UPDATE, '检查更新', NavigationItemPosition.BOTTOM)
         # add custom widget to bottom
         self.navigationInterface.addWidget(
             routeKey='avatar',
@@ -700,6 +702,22 @@ class Window(FramelessWindow):
             tooltip=text
         )
 
+    def addUpdateButton(self, icon, text: str, position=NavigationItemPosition.TOP):
+        """ add update button """
+        updateButton = QLabel()
+        updateButton.setObjectName('checkUpdateButton')
+        updateButton.setText(text)
+        updateButton.setAlignment(Qt.AlignCenter)
+        updateButton.mousePressEvent = self.checkForUpdates
+
+        self.navigationInterface.addItem(
+            routeKey='checkUpdate',
+            icon=icon,
+            text=text,
+            onClick=lambda: self.checkForUpdates(),
+            position=position,
+            tooltip=text
+        )
     def setQss(self):
         color = 'dark' if isDarkTheme() else 'light'
         color_path = resource_path(f'resource/{color}/demo.qss')
@@ -729,6 +747,10 @@ class Window(FramelessWindow):
 
         if w.exec():
             QDesktopServices.openUrl(QUrl("https://github.com/robertshuai"))
+
+    def checkForUpdates(self):
+        # This is a placeholder for the update checking logic
+        QDesktopServices.openUrl(QUrl("https://github.com/robertshuai/supply_progress/tree/main/test/dist/"))
 
     def resizeEvent(self, e):
         self.titleBar.move(46, 0)
